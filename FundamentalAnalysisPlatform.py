@@ -386,7 +386,6 @@ def fetch_financial_data_multi_year_fmp(ticker_symbol, frequency='annual', num_p
 
         # Fallback to Alpha Vantage for Shares Outstanding if still missing
         if (final_stock_info.get('sharesOutstanding') is None or pd.isna(final_stock_info.get('sharesOutstanding'))) and ALPHA_VANTAGE_API_KEY:
-            st.sidebar.info(f"Shares Outstanding not found from FMP for {ticker_symbol}. Trying Alpha Vantage...")
             try:
                 av_overview_url = f"{ALPHA_VANTAGE_BASE_URL}?function=OVERVIEW&symbol={ticker_symbol}&apikey={ALPHA_VANTAGE_API_KEY}"
                 response_av = requests.get(av_overview_url, timeout=10)
@@ -400,7 +399,6 @@ def fetch_financial_data_multi_year_fmp(ticker_symbol, frequency='annual', num_p
                         try:
                             shares_outstanding_av = float(av_shares_outstanding_str)
                             final_stock_info['sharesOutstanding'] = shares_outstanding_av
-                            st.sidebar.success(f"Fetched Shares Outstanding ({format_value(shares_outstanding_av, 'number')}) for {ticker_symbol} from Alpha Vantage.")
                         except (ValueError, TypeError):
                             st.sidebar.warning(f"Alpha Vantage 'SharesOutstanding' for {ticker_symbol} was not a valid number: {av_shares_outstanding_str}")
                     elif 'Note' in av_data: 
